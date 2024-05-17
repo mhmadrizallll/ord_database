@@ -16,6 +16,7 @@ const express_1 = __importDefault(require("express"));
 const knex_1 = __importDefault(require("knex"));
 const objection_1 = require("objection");
 const articles_model_1 = require("./model/articles.model");
+const comments_model_1 = require("./model/comments.model");
 const app = (0, express_1.default)();
 const port = 8000;
 const knexInstance = (0, knex_1.default)({
@@ -33,8 +34,12 @@ app.get("/", (_, res) => {
     res.send("Express + TypeScript Server");
 });
 app.get("/articles", (_, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const articles = yield articles_model_1.ArticlesModel.query();
+    const articles = yield articles_model_1.ArticlesModel.query().withGraphFetched("comments");
     res.json({ data: articles });
+}));
+app.get("/comments", (_, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const comments = yield comments_model_1.CommentsModel.query().withGraphFetched("articles");
+    res.json({ data: comments });
 }));
 app.post("/articles", (_, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
